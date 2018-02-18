@@ -3,6 +3,7 @@ extern crate time;
 use std::env;
 use std::path::Path;
 use std::process::Command;
+use std::process::exit;
 
 fn help() {
     println!("How to use Aurora");
@@ -16,7 +17,7 @@ fn struct_cmd(cmd: &str, args: &[&str]) -> Command {
     cmd
 }
 
-fn unzip_targz(in_path: &str, out_path: &str) {
+fn unzip_targz(in_path: &str) {
     let pkg_path = Path::new("/tmp/aurora/");
     match env::set_current_dir(&pkg_path) {
         Ok(p) => println!("{}", pkg_path.display()),
@@ -68,12 +69,10 @@ fn makepkg(path: &str) {
 
 fn main() {
     let args: Vec<String> = env::args().collect();
-    if args.len() < 2 { help(); }
-    // for package in &args[1..] {
-        // download_tarball(package);
-        // TODO: unzip tar.gz
-        //  pgkbuild_path = unzip_targz(tg_path)
-        // makepkg(pgkbuild_path);
-    // }
-    // unzip_targz("/tmp/aurora/yaourt.tar.gz", "/tmp/aurora/yaourt")
+    if args.len() < 2 { help(); exit(0); }
+    for package in &args[1..] {
+        download_tarball(package);
+        unzip_targz(&format!("/tmp/aurora/{}.tar.gz", package.to_string()));
+        makepkg(&format!("/tmp/aurora/{}", package.to_string()));
+    }
 }
