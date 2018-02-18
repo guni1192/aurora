@@ -16,6 +16,22 @@ fn struct_cmd(cmd: &str, args: &[&str]) -> Command {
     cmd
 }
 
+fn unzip_targz(in_path: &str, out_path: &str) {
+    let pkg_path = Path::new("/tmp/aurora/");
+    match env::set_current_dir(&pkg_path) {
+        Ok(p) => println!("{}", pkg_path.display()),
+        Err(e) => panic!("Could not change directory: {}", e),
+    };
+
+    let tar_cmd = match Command::new("tar")
+        .arg("zxvf")
+        .arg(in_path)
+        .spawn() {
+            Ok(p) => println!("Successful unzip tar.gz file: {:?}", p),
+            Err(e) => panic!("Failed unzip tar.gz: {}", e),
+        };
+}
+
 fn download_tarball(package_name: &str) {
     let now = time::now();
     let now_formated = time::strftime("%Y-%m-%d-%H-%M-%S", &now).unwrap();
@@ -53,10 +69,11 @@ fn makepkg(path: &str) {
 fn main() {
     let args: Vec<String> = env::args().collect();
     if args.len() < 2 { help(); }
-    for package in &args[1..] {
-        download_tarball(package);
+    // for package in &args[1..] {
+        // download_tarball(package);
         // TODO: unzip tar.gz
         //  pgkbuild_path = unzip_targz(tg_path)
         // makepkg(pgkbuild_path);
-    }
+    // }
+    // unzip_targz("/tmp/aurora/yaourt.tar.gz", "/tmp/aurora/yaourt")
 }
