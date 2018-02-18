@@ -9,14 +9,6 @@ fn help() {
     println!("How to use Aurora");
 }
 
-fn struct_cmd(cmd: &str, args: &[&str]) -> Command {
-    let mut cmd = Command::new(cmd);
-    for arg in args {
-        cmd.arg(arg);
-    }
-    cmd
-}
-
 fn unzip_targz(in_path: &str) {
     let pkg_path = Path::new("/tmp/aurora/");
     match env::set_current_dir(&pkg_path) {
@@ -33,22 +25,23 @@ fn unzip_targz(in_path: &str) {
         };
 }
 
+// TODO: cURL(外部コマンド)無しで実装する。
 fn download_tarball(package_name: &str) {
+    /*
     let now = time::now();
     let now_formated = time::strftime("%Y-%m-%d-%H-%M-%S", &now).unwrap();
-    let curl_args = [
-        "curl",
-        "--output",
-        &format!("/tmp/aurora/{0}_{1}.tar.gz", package_name, &now_formated),
-        "-L",
-        "-O",
-        &format!("https://aur.archlinux.org/cgit/aur.git/snapshot/{}.tar.gz",
-                 package_name),
-    ];
-    let mut curl_cmds = match struct_cmd(curl_args[0], &curl_args[1..]).spawn() {
-        Ok(p) => p,
-        Err(e) => panic!("faild tot exectute: {}", e),
-    };
+    */
+    let curl_cmds = match Command::new("curl")
+        .arg("--output")
+        .arg(&format!("/tmp/aurora/{}.tar.gz", package_name))
+        .arg("-L")
+        .arg("-O")
+        .arg(&format!("https://aur.archlinux.org/cgit/aur.git/snapshot/{}.tar.gz",
+                 package_name))
+        .spawn() {
+            Ok(p) => p,
+            Err(e) => panic!("faild tot exectute: {}", e),
+        }
     curl_cmds.wait();
 }
 
