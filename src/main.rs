@@ -3,7 +3,6 @@ use clap::{App, Arg};
 mod sync;
 // mod query;
 
-
 fn main() {
     let matches = App::new("aurora")
         .version("0.1.0")
