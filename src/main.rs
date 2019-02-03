@@ -1,45 +1,7 @@
-use std::env;
-use std::path::Path;
-use std::process::Command;
-// mod query;
-
 use clap::{App, Arg};
 
-fn download_tarball(package_name: &str) {
-    let aur_url = &format!("https://aur.archlinux.org/{}.git", package_name);
-    let clone_path = &format!("/tmp/aurora/{}", package_name);
-    let mut git_clone = Command::new("git")
-        .arg("clone")
-        .arg(aur_url)
-        .arg(clone_path)
-        .spawn()
-        .unwrap();
-    git_clone.wait().unwrap();
-}
-
-fn makepkg(path: &str) {
-    let pkg_path = Path::new(path);
-    match env::set_current_dir(&pkg_path) {
-        Ok(p) => p,
-        Err(e) => panic!("Could not change directory: {}", e),
-    };
-
-    let mut cmd = match Command::new("makepkg").arg("-si").spawn() {
-        Ok(p) => p,
-        Err(e) => panic!("Failed while Building: {}", e),
-    };
-    cmd.wait().unwrap();
-}
-
-// fn sync(options: &[String]) {
-fn sync(s: &str) {
-    download_tarball(s);
-    makepkg(&format!("/tmp/aurora/{}", s.to_string()));
-}
-
-// fn search(options: &[String]) {
-//     query::get_query(options[0])
-// }
+mod sync;
+// mod query;
 
 fn main() {
     let matches = App::new("aurora")
@@ -57,13 +19,7 @@ fn main() {
         .get_matches();
 
     if let Some(s) = matches.value_of("sync") {
-        println!("Install {}", s);
-        sync(s)
+        println!("Install {} ...", s);
+        sync::sync(s);
     }
-
-    // match &args[1][..] {
-    //     "-S" => sync(&args[2..]),
-    //     // "-Ss" => search(&args[2..]),
-    //     _ => help(),
-    // }
 }
