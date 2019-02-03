@@ -1,10 +1,9 @@
 use std::env;
 use std::path::Path;
-use std::process::exit;
 use std::process::Command;
 // mod query;
 
-use clap::{App, Arg, SubCommand};
+use clap::{App, Arg};
 
 fn download_tarball(package_name: &str) {
     let aur_url = &format!("https://aur.archlinux.org/{}.git", package_name);
@@ -15,7 +14,7 @@ fn download_tarball(package_name: &str) {
         .arg(clone_path)
         .spawn()
         .unwrap();
-    git_clone.wait();
+    git_clone.wait().unwrap();
 }
 
 fn makepkg(path: &str) {
@@ -29,15 +28,13 @@ fn makepkg(path: &str) {
         Ok(p) => p,
         Err(e) => panic!("Failed while Building: {}", e),
     };
-    cmd.wait();
+    cmd.wait().unwrap();
 }
 
 // fn sync(options: &[String]) {
 fn sync(s: &str) {
-    // for package in options {
     download_tarball(s);
     makepkg(&format!("/tmp/aurora/{}", s.to_string()));
-    // }
 }
 
 // fn search(options: &[String]) {
