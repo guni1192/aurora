@@ -1,10 +1,12 @@
 [package]
 name = "aurora"
 version = "0.1.0"
-authors = ["guni973"]
+authors = ["guni1192"]
+edition = "2018"
 
 [dependencies]
 reqwest = "*"
 serde = "*"
 serde_json = "1.0"
 serde_derive = "*"
+clap = "2.32.0"

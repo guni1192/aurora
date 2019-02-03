@@ -1,9 +1,9 @@
 extern crate reqwest;
 extern crate serde;
-extern crate serde_json;
 extern crate serde_derive;
+extern crate serde_json;
 
-use self::serde_json::{Value, Error};
+use self::serde_json::{Deserializer, Error, Serializer, Value};
 
 pub struct PackageInfo {
     ID: i32,
@@ -19,7 +19,7 @@ pub struct PackageInfo {
     OutOfDate: String,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serializer, Deserializer)]
 pub struct RpcResponse {
     Type: String,
     resultcount: i32,
