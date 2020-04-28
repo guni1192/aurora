@@ -28,8 +28,7 @@ pub struct RpcResponse {
 }
 
 pub fn get_query(keyword: String) -> RpcResponse {
-    let base_url = "https://aur.archlinux.org/rpc.php";
-    let search_url = format!("{}/?v=5&type=search&arg={}", base_url, keyword);
+    let search_url = format!("{}/?v=5&type=search&arg={}", config::, keyword);
     let mut responce = self::reqwest::get(&search_url).unwrap();
 
     let mut body = String::new();

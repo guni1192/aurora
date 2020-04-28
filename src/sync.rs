@@ -3,12 +3,11 @@ use std::io;
 use std::path::Path;
 use std::process::Command;
 
-static AUR_BASE_URL: &'static str = "https://aur.archlinux.org/";
-static DOWNLOAD_PATH: &'static str = "/tmp/aurora";
+use crate::config;
 
 fn download_tarball(package_name: &str) -> io::Result<()> {
-    let aur_url = &format!("{}/{}.git", AUR_BASE_URL, package_name);
-    let clone_path = &format!("{}/{}", DOWNLOAD_PATH, package_name);
+    let aur_url = &format!("{}/{}.git", config::AUR_GIT_URL, package_name);
+    let clone_path = &format!("{}/{}", config::DOWNLOAD_DIR, package_name);
     let mut git_clone = Command::new("git")
         .arg("clone")
         .arg(aur_url)
@@ -20,7 +19,7 @@ fn download_tarball(package_name: &str) -> io::Result<()> {
 }
 
 fn makepkg(package_name: &str) -> io::Result<()> {
-    let path = &format!("{}/{}", DOWNLOAD_PATH, package_name.to_string());
+    let path = &format!("{}/{}", config::DOWNLOAD_DIR, package_name.to_string());
     let pkg_path = Path::new(path);
 
     env::set_current_dir(&pkg_path).expect("Could not change directory: ");

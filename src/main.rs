@@ -1,6 +1,7 @@
 mod sync;
 // mod query;
 mod cli;
+mod config;
 
 fn main() {
     let matches = cli::init_config().get_matches();
